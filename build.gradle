@@ -1,7 +1,8 @@
 plugins {
     id 'idea'
     id 'java'
-    id('io.ebean') version '13.11.0'
+    id('io.ebean') version '13.22.0'
+    id('com.github.ben-manes.versions') version '0.48.0'
 }
 
 group = 'cl.ucn.disc.as'
@@ -25,30 +26,30 @@ compileJava {
 
 dependencies {
     // junit
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 
     // lombok
-    testCompileOnly 'org.projectlombok:lombok:1.18.28'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
 
     // ebean
-    testImplementation 'io.ebean:ebean-test:13.11.0'
+    testImplementation 'io.ebean:ebean-test:13.23.0'
 
     // ebean
-    implementation 'io.ebean:ebean:13.11.0'
-    implementation 'io.ebean:ebean-ddl-generator:13.21.0'
-    annotationProcessor 'io.ebean:querybean-generator:13.11.0'
+    implementation 'io.ebean:ebean:13.23.0'
+    implementation 'io.ebean:ebean-ddl-generator:13.23.0'
+    annotationProcessor 'io.ebean:querybean-generator:13.23.0'
 
     // database
-    implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
+    implementation 'org.xerial:sqlite-jdbc:3.43.2.0'
     // implementation 'com.h2database:h2:2.2.220'
 
     // json
     implementation 'com.google.code.gson:gson:2.10.1'
 
     // web: javalin
-    implementation 'io.javalin:javalin:5.6.1'
+    implementation 'io.javalin:javalin:5.6.3'
 
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.28'
@@ -61,6 +62,8 @@ dependencies {
     // commons-lang3
     implementation 'org.apache.commons:commons-lang3:3.13.0'
 
+    // data faker
+    implementation 'com.github.javafaker:javafaker:1.0.2'
 
 }
 
