@@ -3,7 +3,9 @@ package cl.ucn.disc.as.model;
 import cl.ucn.disc.as.model.exceptions.IllegalDomainException;
 import cl.ucn.disc.as.utils.ValidationUtils;
 import io.ebean.annotation.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 
@@ -16,42 +18,35 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Contrato{
+public class Pago{
 
     /**
      * The RUT.
      */
     @NotNull
-    @Getter
-    @Setter
     private String fechaPago;
 
+    /**
+     * The Nombre.
+     */
     @NotNull
-    @Getter
-    @Setter
-    private Persona persona;
-
-    @NotNull
-    @Getter
-    @Setter
-    private Departamento departamento;
-
+    private Integer monto;
 
     /**
      *
      *
      * **/
-    public static class ContratoBuilder {
+    public static class PagoBuilder {
 
         /**
          * @return the persona
          * **/
-        public Contrato build(){
+        public Pago build(){
 
 
             //TODO: agregar resto de validaciones
 
-            return new Contrato(this.fechaPago,this.persona,this.departamento);
+            return new Pago(this.fechaPago,this.monto);
         }
     }
 

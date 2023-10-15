@@ -21,7 +21,7 @@ public final class Main {
                 .build();
         log.debug("edificio before db: {}", edificio);
 
-        edificio = sistema.agregar(edificio);
+        edificio = sistema.add(edificio);
         log.debug("edificio after db: {}", edificio);
 
 
