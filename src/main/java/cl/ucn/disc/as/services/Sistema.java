@@ -28,7 +28,7 @@ public interface Sistema {
 
 
     Contrato realizarContrato(Persona owner, Departamento departamento, String fechaPago);
-    Contrato realizarContrato(Long idOwner,Long idDepartamento,String fechaPago);
+   String realizarContrato(Long idOwner,Long idDepartamento,String fechaPago);
 
 
     List<Contrato> getContratos();
