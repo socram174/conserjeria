@@ -1,22 +1,29 @@
 import cl.ucn.disc.as.model.Departamento;
 import cl.ucn.disc.as.model.Edificio;
+import cl.ucn.disc.as.services.PersonaGrpcServiceImpl;
 import cl.ucn.disc.as.services.Sistema;
 import cl.ucn.disc.as.services.SistemaImpl;
 //import cl.ucn.disc.as.ui.ApiRestServer;
 //import cl.ucn.disc.as.ui.WebController;
+import cl.ucn.disc.as.ui.ApiRestServer;
+import cl.ucn.disc.as.ui.WebController;
 import io.ebean.DB;
 import io.ebean.Database;
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 
 
 @Slf4j
 public final class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         log.debug("Starting Main...");
 
-        //ApiRestServer.start(7070, new WebController());
+        ApiRestServer.start(7070, new WebController());
 
         log.debug("Done...");
 
@@ -44,5 +51,21 @@ public final class Main {
 //        Departamento dpto = sistema.addDepartamento(departamento, edificio);
 //        log.debug("Departamento Created ${}", dpto);
 //        sistema.addDepartamento(departamento2, createdEdificio.getId());
+
+        // Start the gRPC server
+        log.debug("Starting the gRPC server...");
+        Server server = ServerBuilder
+                .forPort(50123)
+                .addService(new PersonaGrpcServiceImpl())
+                .build();
+        server.start();
+
+        // shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
+
+        // wait for the stop
+        server.awaitTermination();
+
+        log.debug("Done. :)");
     }
 }
