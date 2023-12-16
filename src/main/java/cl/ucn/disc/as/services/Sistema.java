@@ -5,6 +5,7 @@ import cl.ucn.disc.as.model.Edificio;
 import cl.ucn.disc.as.model.Persona;
 import cl.ucn.disc.as.model.Contrato;
 import cl.ucn.disc.as.model.Pago;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -28,11 +29,14 @@ public interface Sistema {
 
 
     Contrato realizarContrato(Persona owner, Departamento departamento, String fechaPago);
-   String realizarContrato(Long idOwner,Long idDepartamento,String fechaPago);
+   //String realizarContrato(Long idOwner,Long idDepartamento,String fechaPago);
 
 
     List<Contrato> getContratos();
     List<Persona> getPersonas();
-    List<Pago> getPagos();
+    List<Pago> getPagos(String rut);
 
+    Optional<Persona> getPersona(String rut);
+
+    void populate();
 }

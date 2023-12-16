@@ -21,20 +21,24 @@ public class Contrato{
     /**
      * The RUT.
      */
+
     @NotNull
     @Getter
     @Setter
-    private String fechaPago;
+    private Departamento departamento;
+
 
     @NotNull
     @Getter
     @Setter
     private Persona persona;
 
+
+
     @NotNull
     @Getter
     @Setter
-    private Departamento departamento;
+    private String fechaPago;
 
 
     /**
@@ -51,7 +55,7 @@ public class Contrato{
 
             //TODO: agregar resto de validaciones
 
-            return new Contrato(this.fechaPago,this.persona,this.departamento);
+            return new Contrato(this.departamento,this.persona,this.fechaPago);
         }
     }
 

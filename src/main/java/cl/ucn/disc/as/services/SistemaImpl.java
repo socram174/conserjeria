@@ -1,141 +1,146 @@
 package cl.ucn.disc.as.services;
 
-import cl.ucn.disc.as.model.exceptions.IllegalDomainException;
-import cl.ucn.disc.as.model.Departamento;
-import cl.ucn.disc.as.model.Edificio;
-import cl.ucn.disc.as.model.Persona;
-import cl.ucn.disc.as.model.Contrato;
-import cl.ucn.disc.as.model.Pago;
+import cl.ucn.disc.as.exceptions.SistemaException;
+import cl.ucn.disc.as.model.*;
+import com.github.javafaker.Faker;
+import com.github.javafaker.service.FakeValuesService;
+import com.github.javafaker.service.RandomService;
 import io.ebean.Database;
 import io.ebean.PersistenceIOException;
-import org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.PersistenceException;
 import java.time.Instant;
 import java.util.List;
-/**
- * Sistema implementation
- *
- * @autho arquitectrura de software
- */
+import java.util.Locale;
+import java.util.Optional;
 @Slf4j
 public class SistemaImpl implements Sistema {
-    /**
-     *  the database
-     */
+
     private final Database database;
 
-    public SistemaImpl(Database database){
+    public SistemaImpl(Database database) {
         this.database = database;
     }
-    /**
-     * Agrega un edificio al sistema
-     *
-     * @param edificio a agregar
-     */
+
     @Override
-    public Edificio add(@NotNull Edificio edificio) {
+    public Edificio add(Edificio edificio) {
         try {
             this.database.save(edificio);
-        }catch (PersistenceIOException ex){
-            log.error("error",ex);
-            throw new IllegalDomainException("Error al agrega un edificio");
+            return edificio;
+        } catch (PersistenceException ex) {
+            log.error("Error al agregar un edificio", ex);
+            throw new SistemaException("Error al agregar un edificio", (PersistenceIOException) ex);
         }
-
-        //WARN:Need to retrieve the id?
-        return edificio;
-
     }
 
+
     @Override
-    public Persona add(@NotNull Persona persona) {
+    public Persona add(Persona persona) {
         try {
             this.database.save(persona);
-        }catch (PersistenceIOException ex){
-            log.error("error",ex);
-            throw new IllegalDomainException("Error al agrega un edificio");
+            return persona;
+        } catch (PersistenceException ex) {
+            log.error("Error al agregar una persona", ex);
+            throw new SistemaException("Error al agregar una persona", (PersistenceIOException) ex);
         }
+    }
 
-        //WARN:Need to retrieve the id?
-        return persona;
 
+    @Override
+    public Departamento addDepartamento(Departamento departamento, Edificio edificio) {
+        try {
+            this.database.save(departamento);
+            return departamento;
+        } catch (PersistenceException ex) {
+            log.error("Error al agregar un departamento", ex);
+            throw new SistemaException("Error al agregar un departamento", (PersistenceIOException) ex);
+        }
     }
 
     @Override
-    public Departamento addDepartamento(@NotNull Departamento departamento, Edificio edificio) {
+    public Departamento addDepartamento(Departamento departamento, Long idEdificio) {
         try {
             this.database.save(departamento);
-            this.database.save(edificio);
-        }catch (PersistenceIOException ex){
-            log.error("error",ex);
-            throw new IllegalDomainException("Error al agrega un edificio");
+            return departamento;
+        } catch (PersistenceException ex) {
+            log.error("Error al agregar un departamento", ex);
+            throw new SistemaException("Error al agregar un departamento", (PersistenceIOException) ex);
         }
-
-        //WARN:Need to retrieve the id?
-        return departamento;
-
     }
 
-    @Override
-    public Departamento addDepartamento(@NotNull Departamento departamento, Long idEdificio) {
-        try {
-            this.database.save(departamento);
-        }catch (PersistenceIOException ex){
-            log.error("error",ex);
-            throw new IllegalDomainException("Error al agrega un edificio");
-        }
-
-        //WARN:Need to retrieve the id?
-        return departamento;
-
-    }
 
     @Override
     public Contrato realizarContrato(Persona owner, Departamento departamento, String fechaPago) {
         try {
-            Contrato contrato = Contrato.builder()
-                    .departamento(departamento)
-                    .persona(owner)
-                    .fechaPago(fechaPago)
-                    .build();
-            database.save(contrato);
+            Contrato contrato = new Contrato(departamento, owner, fechaPago);
+
+            this.database.save(contrato);
+
             return contrato;
-        }catch (PersistenceIOException ex){
-            log.error("error",ex);
-            throw new IllegalDomainException("Error al agrega un edificio");
-        }//WARN:Need to retrieve the id
-
-    }
-
-    @Override
-    public String realizarContrato(Long idOwner,Long idDepartamento,String fechaPago) {
-        try {
-            //Departamento departamento = findDepartamentoById(idDepartamento);
-            //Persona duenio = findPersonaById(idDuenio);
-            //return this.realizarContrato(duenio, departamento, fechaPago);
-
-            return "asdfadf";
-        }catch (PersistenceIOException ex){
-            log.error("error",ex);
-            throw new IllegalDomainException("Error al agrega un edificio");
-        }//WARN:Need to retrieve the id
-
+        } catch (PersistenceException ex) {
+            log.error("Error al realizar un contrato", ex);
+            throw new SistemaException("Error al realizar un contrato", (PersistenceIOException) ex);
+        }
     }
 
     @Override
     public List<Contrato> getContratos() {
-        return database.find(Contrato.class).findList();
+        List<Contrato> contratos = database.find(Contrato.class).findList();
+        return contratos;
     }
 
     @Override
     public List<Persona> getPersonas() {
-        //TODO: Implement offset and max rows
-        return database.find(Persona.class).findList();
+        List<Persona> personas = database.find(Persona.class).findList();
+        return personas;
     }
 
     @Override
-    public List<Pago> getPagos() {
-        return database.find(Pago.class).findList();
+    public List<Pago> getPagos(String rut) {
+        List<Pago> pagos = database.find(Pago.class)
+                .where()
+                .eq("rut", rut)
+                .findList();
+        return pagos;
+    }
+    @Override
+    public Optional<Persona> getPersona(String rut) {
+        Persona persona = database.find(Persona.class)
+                .where()
+                .eq("rut", rut)
+                .findOne();
+
+        return Optional.ofNullable(persona);
     }
 
+    @Override
+    public void populate() {
+        {
+            Persona persona = Persona.builder()
+                    .rut("19741569-K")
+                    .nombre("Marcos")
+                    .apellidos("Silva")
+                    .email("marcos.silva@alumnos.ucn.cl")
+                    .telefono("+56934544332")//este telefono lo puse al azar, ya que no quiero que el mio quede expuesto
+                    .build();
+            this.database.save(persona);
+        }
+
+        Locale locale = new Locale("es-CL");
+        FakeValuesService fvs = new FakeValuesService(locale, new RandomService());
+        Faker faker = new Faker(locale);
+
+        for (int i = 0; i < 100; i++) {
+            Persona persona = Persona.builder()
+                    .rut(fvs.bothify("########-#"))
+                    .nombre(faker.name().firstName())
+                    .apellidos(faker.name().lastName())
+                    .email(fvs.bothify("???###@gmail.com"))
+                    .telefono(fvs.bothify("+569########"))
+                    .build();
+            this.database.save(persona);
+        }
+    }
 }
+
