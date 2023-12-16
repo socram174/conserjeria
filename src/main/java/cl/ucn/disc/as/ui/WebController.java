@@ -33,15 +33,15 @@ public final class WebController implements RoutesConfigurator {
             ctx.json(this.sistema.getPersonas());
         });
 
-        //app.get("/api/personas/{rut}", ctx -> {
-        //    String rut = ctx.pathParam("rut");
-        //    Optional<Persona> persona = this.sistema.getPersona(rut);
-        //    if (persona.isPresent()) {
-        //        ctx.json(persona.get());
-        //    } else {
-        //        throw new NotFoundResponse("No existe la persona con RUT " + rut);
-        //    }
-        //});
+        app.get("/api/personas/{rut}", ctx -> {
+           String rut = ctx.pathParam("rut");
+            Optional<Persona> persona = this.sistema.getPersona(rut);
+            if (persona.isPresent()) {
+                ctx.json(persona.get());
+           } else {
+               throw new NotFoundResponse("No existe la persona con RUT " + rut);
+            }
+        });
 
         app.get("/api/grpc/personas/rut/{rut}", ctx -> {
            String rut = ctx.pathParam("rut");
