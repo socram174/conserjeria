@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  your-app:
+    image: conserjeria
+    ports:
+      - "7070:7070"
