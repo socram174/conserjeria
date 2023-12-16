@@ -2,6 +2,6 @@ version: '3'
 
 services:
   your-app:
-    image: api-conserjeria
+    image: conserjeria
     ports:
       - "7070:7070"
